@@ -1,84 +1,130 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <BurnDownChart />
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-btn flat icon color="white" class="float-right">
+          <v-icon dark>mdi-reload</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-hover>
+          <v-card
+           slot-scope="{ hover }"
+           class="mx-auto aligh-center"
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
+            <v-fade-transition>
+              <div
+                v-if="hover"
+                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                style="height: 100%;"
+              >
+              </div>
+            </v-fade-transition>
+            <v-card-title class="headline">
+              スプリントバーンダウンチャート
+            </v-card-title>
+            <BurnDownChart />
+          </v-card>
+        </v-hover>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-hover>
+          <v-card
+           slot-scope="{ hover }"
+           class="mx-auto"
           >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
+            <v-fade-transition>
+              <div
+                v-if="hover"
+                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                style="height: 100%;"
+              >
+              </div>
+            </v-fade-transition>
+            <v-card-title class="headline">
+              スプリント残時間
+            </v-card-title>
+            <v-card-text>
+              <p class="display-3">30.5h</p>
+            </v-card-text>
+          </v-card>
+        </v-hover>
+      </v-col>
+      <v-col>
+        <v-hover>
+          <v-card
+           slot-scope="{ hover }"
+           class="mx-auto"
           >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+            <v-fade-transition>
+              <div
+                v-if="hover"
+                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                style="height: 100%;"
+              >
+              </div>
+            </v-fade-transition>
+            <v-card-title class="headline">
+              タスク残時間
+            </v-card-title>
+            <v-card-text>
+              <p class="display-3">30.5h</p>
+            </v-card-text>
+          </v-card>
+        </v-hover>
+      </v-col>
+      <v-col>
+        <v-hover>
+          <v-card
+           slot-scope="{ hover }"
+           class="mx-auto"
+          >
+            <v-fade-transition>
+              <div
+                v-if="hover"
+                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                style="height: 100%;"
+              >
+              </div>
+            </v-fade-transition>
+            <v-card-title class="headline">
+              先行/遅れ
+            </v-card-title>
+            <v-card-text>
+              <p class="display-3">30.5h</p>
+            </v-card-text>
+          </v-card>
+        </v-hover>
+      </v-col>
+      <v-col>
+        <v-hover>
+          <v-card
+           slot-scope="{ hover }"
+           class="mx-auto"
+          >
+            <v-fade-transition>
+              <div
+                v-if="hover"
+                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                style="height: 100%;"
+              >
+              </div>
+            </v-fade-transition>
+            <v-card-title class="headline">
+              進捗率
+            </v-card-title>
+            <v-card-text>
+              <p class="display-3">60%</p>
+            </v-card-text>
+          </v-card>
+        </v-hover>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -90,3 +136,14 @@ export default {
   }
 }
 </script>
+
+<style>
+.v-card--reveal {
+  border: solid 1px #00bfff;
+  border-radius: 3px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+}
+</style>

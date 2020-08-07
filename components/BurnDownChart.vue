@@ -1,9 +1,6 @@
 <template>
-  <div class="small">
-    <line-chart :chart-data="datacollection"></line-chart>
-    <div class="text-center">
-      <v-btn  depressed small @click="fillData()">Randomize</v-btn>
-    </div>
+  <div>
+    <line-chart :chart-data="datacollection" :options="graphOptions" style="position: relative; height: 600px;"></line-chart>
     <div>{{ taskData }}</div>
   </div>
 </template>
@@ -14,6 +11,44 @@ export default {
   data () {
     return {
       datacollection: null,
+      graphOptions: {
+        // responsive: true,
+        legend: {
+          align: 'end'
+        },
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              gridLines: {
+                color: '#808080'
+              }
+            }
+          ],
+          yAxes: [
+            {
+              gridLines: {
+                color: '#808080'
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Hours'
+              }
+            }
+          ]
+        },
+        tooltips: {
+          backgroundColor: 'white',
+          titleFontColor: 'black',
+          bodyFontColor: 'black',
+          mode: 'label',
+          // callbacks: {
+          //   label: function (tooltipItem, data){
+          //     return ["計画との差：" + tooltipItem + "huga"]
+          //   }
+          // }
+        }
+      },
       taskData: []
     }
   },
@@ -29,21 +64,33 @@ export default {
   methods: {
     fillData () {
       this.datacollection = {
-        labels: [this.getRandomInt(), this.getRandomInt()],
+        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12'],
         datasets: [
           {
-            label: 'Test Data2',
-            backgroundColor: 'rgba(255, 100, 130, 0.2)',
-            data: [this.getRandomInt(), this.getRandomInt()]
+            label: '計画',
+            lineTension: 0,
+            backgroundColor: '#f0f8ff',
+            fill: false,
+            borderColor: '#f0f8ff',
+            borderWidth: 3,
+            pointHitRadius: 15,
+            hoverRadius: 10,
+            radius: 5,
+            pointStyle: 'circle',
+            data: [110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0],
+            borderDash: [5, 5]
           }, {
-            label: 'Test Data2',
-            backgroundColor: 'rgba(100, 130, 255, 0.2)',
-            data: [this.getRandomInt(), this.getRandomInt()]
-          }
-          , {
-            label: 'Test Data3',
-            backgroundColor: 'rgba(130, 255, 100, 0.2)',
-            data: [this.getRandomInt(), this.getRandomInt()]
+            label: '実績',
+            lineTension: 0,
+            backgroundColor: '#00bfff',
+            fill: false,
+            borderColor: '#00bfff',
+            borderWidth: 5,
+            pointHitRadius: 15,
+            hoverRadius: 10,
+            radius: 5,
+            pointStyle: 'rectRounded',
+            data: [100, 110, 125, 95, 64, 76, 62]
           }
         ]
       }
@@ -56,9 +103,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.small {
-  width: 80%;
-  max-width: 100%;
-  margin: 150px auto;
-}
 </style>
