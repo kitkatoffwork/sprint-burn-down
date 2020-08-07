@@ -1,21 +1,30 @@
 <template>
   <div class="small">
-      <line-chart :chart-data="datacollection"></line-chart>
-      <div class="text-center">
-        <v-btn  depressed small @click="fillData()">Randomize</v-btn>
-      </div>    
+    <line-chart :chart-data="datacollection"></line-chart>
+    <div class="text-center">
+      <v-btn  depressed small @click="fillData()">Randomize</v-btn>
     </div>
+    <div>{{ taskData }}</div>
+  </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
-      datacollection: null
+      datacollection: null,
+      taskData: []
     }
   },
   mounted () {
     this.fillData()
+    axios.get(process.env.JIRA_URL + '/rest/api/3/issue/', {
+      auth: {
+        username: process.env.JIRA_USERNAME,
+        password: process.env.JIRA_PASSWD
+      }
+    }).then((response) => this.taskData = response)
   },
   methods: {
     fillData () {

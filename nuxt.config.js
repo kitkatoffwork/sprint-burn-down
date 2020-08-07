@@ -48,13 +48,16 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    '@nuxtjs/dotenv',
     '@nuxtjs/vuetify',
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
+    "@nuxtjs/axios"
   ],
+  axios: {},
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
