@@ -51,13 +51,13 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Welcome',
+          title: 'DashBoard',
           to: '/'
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          icon: 'mdi-calendar-text',
+          title: 'Tasks',
+          to: '/tasks'
         }
       ],
       miniVariant: false,

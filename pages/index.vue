@@ -2,6 +2,9 @@
   <v-container>
     <v-row>
       <v-col>
+        <div class="font-weight-thin display-1">DashBoard</div>
+      </v-col>
+      <v-col>
         <v-btn flat icon color="white" class="float-right">
           <v-icon dark>mdi-reload</v-icon>
         </v-btn>
