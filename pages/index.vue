@@ -1,97 +1,292 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
+  <v-container>
+    <v-row>
+      <v-col>
+        <div class="font-weight-thin display-1">DashBoard</div>
+      </v-col>
+      <v-col>
+        <v-btn text icon color="white" class="float-right" @click="getSprintTask()">
+          <v-icon dark>mdi-reload</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="card"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto aligh-center"
             >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                スプリントバーンダウンチャート
+              </v-card-title>
+              <BurnDownChart :days="days" :timeLeftPlan="timeLeftPlan" :timeLeftLog="timeLeftLog" />
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
             >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                スプリント残時間
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ sprintLeft }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
+      </v-col>
+      <v-col>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
             >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                タスク残時間
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ taskLeft }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
+      </v-col>
+      <v-col>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                先行/遅れ
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ plusMinous }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
+      </v-col>
+      <v-col>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                進捗率
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ progress }}%</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import BurnDownChart from '~/components/BurnDownChart.vue'
 
 export default {
   components: {
-    Logo,
-    VuetifyLogo
+    BurnDownChart
+  },
+  data () {
+    return {
+      days: [],
+      timeLeftPlan: [],
+      timeLeftLog: [],
+      sprintLeft: 0,
+      taskLeft: 0,
+      plusMinous: 0,
+      progress: 0,
+      loading: false
+    }
+  },
+  mounted () {
+    this.getSprintTask()
+  },
+  methods: {
+    async getSprintTask () {
+      // TODO: proxy serverを自前でたてる
+      // 今回スプリントで開発に充てる日付を取得
+      this.loading = true
+      await this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+        credentials: true,
+        auth: {
+          username: process.env.JIRA_USERNAME,
+          password: process.env.JIRA_PASSWD
+        }
+      }).then((res) => {
+        this.days = []
+        const startDate = this.$moment(res.values[0].startDate)
+        const endDate = this.$moment(res.values[0].endDate)
+        for (let date = startDate; date < endDate; startDate.add(1, "days")) {
+          // スプリント最終日は開発を行わない（レビュー日）ため計画から除く、土日は休みのため計画から除く
+          if (date.format('ddd') != '土' && date.format('ddd') != '日' && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
+            this.days.push(date.format("YYYY-MM-DD"))
+          }
+        }
+      })
+
+      // 今回スプリントの全ての親タスク（Story）を取得
+      let parentTasksForJql = ''
+      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'), {
+        credentials: true,
+        auth: {
+          username: process.env.JIRA_USERNAME,
+          password: process.env.JIRA_PASSWD
+        }
+      }).then((res) => {
+        for (const el of res.issues) {
+          parentTasksForJql += 'parent = ' + el.key
+          if (el != res.issues.slice(-1)[0]) {
+            parentTasksForJql += ' OR '
+          }
+        }
+      })
+
+      // 全ての子タスク分の時間取得
+      let sprintFullTime = 0
+      this.timeLeftPlan = []
+      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
+        credentials: true,
+        auth: {
+          username: process.env.JIRA_USERNAME,
+          password: process.env.JIRA_PASSWD
+        }
+      }).then((res) => {
+        for (const el of res.issues) {
+          sprintFullTime += el.fields.timeestimate
+        }
+        // 計画線を引くための配列を作成
+        sprintFullTime = sprintFullTime / 3600
+        const timeAvailablePerDay = sprintFullTime / this.days.length
+        let timeLeftPlanNum = sprintFullTime
+        for (const day of this.days) {
+          this.timeLeftPlan.push(timeLeftPlanNum)
+          // 今日時点でのスプリント残時間を保持
+          if (day === this.$moment().format("YYYY-MM-DD")) {
+            this.sprintLeft = timeLeftPlanNum.toFixed(1)
+          }
+          timeLeftPlanNum -= timeAvailablePerDay
+        }
+      })
+
+      // スプリント開始から今日まで日ごとに消化したタスク取得
+      let timeLeft = sprintFullTime
+      this.timeLeftLog = []
+      for (const day of this.days) {
+        await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
+          credentials: true,
+          auth: {
+            username: process.env.JIRA_USERNAME,
+            password: process.env.JIRA_PASSWD
+          }
+        }).then((res) => {
+          for (const el of res.issues) {
+            timeLeft -= el.fields.timeestimate / 3600
+          }
+          // 残り時間の実績に追加
+          this.timeLeftLog.push(timeLeft)
+          // タスク残時間・先行遅れ・進捗率を更新
+          this.taskLeft = this.timeLeftLog.slice(-1)[0].toFixed(1)
+          this.plusMinous = (this.sprintLeft - this.taskLeft).toFixed(1)
+          this.progress = (((sprintFullTime - this.taskLeft) / sprintFullTime) * 100).toFixed(1)
+        })
+        if (day === this.$moment().format("YYYY-MM-DD")) {
+          break
+        }
+      }
+      this.loading = false
+    }
   }
 }
 </script>
+
+<style>
+.v-card--reveal {
+  border: solid 1px #00bfff;
+  border-radius: 3px;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+}
+</style>

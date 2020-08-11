@@ -37,6 +37,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    '@/plugins/line-chart'
   ],
   /*
   ** Auto import components
@@ -47,13 +48,20 @@ export default {
   ** Nuxt.js dev-modules
   */
   buildModules: [
+    '@nuxtjs/dotenv',
+    '@nuxtjs/moment',
     '@nuxtjs/vuetify',
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
+    "@nuxtjs/axios"
   ],
+  axios: {},
+  moment: {
+    locales: ['ja']
+  },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
