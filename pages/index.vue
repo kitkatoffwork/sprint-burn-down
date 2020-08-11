@@ -52,7 +52,7 @@
               スプリント残時間
             </v-card-title>
             <v-card-text>
-              <p class="display-3">30.5h</p>
+              <p class="display-3">{{ sprintLeft }}h</p>
             </v-card-text>
           </v-card>
         </v-hover>
@@ -75,7 +75,7 @@
               タスク残時間
             </v-card-title>
             <v-card-text>
-              <p class="display-3">30.5h</p>
+              <p class="display-3">{{ taskLeft }}h</p>
             </v-card-text>
           </v-card>
         </v-hover>
@@ -98,7 +98,7 @@
               先行/遅れ
             </v-card-title>
             <v-card-text>
-              <p class="display-3">30.5h</p>
+              <p class="display-3">{{ plusMinous }}h</p>
             </v-card-text>
           </v-card>
         </v-hover>
@@ -121,7 +121,7 @@
               進捗率
             </v-card-title>
             <v-card-text>
-              <p class="display-3">60%</p>
+              <p class="display-3">{{ progress }}%</p>
             </v-card-text>
           </v-card>
         </v-hover>
@@ -141,7 +141,11 @@ export default {
     return {
       days: [],
       timeLeftPlan: [],
-      timeLeftLog: []
+      timeLeftLog: [],
+      sprintLeft: 0,
+      taskLeft: 0,
+      plusMinous: 0,
+      progress: 0
     }
   },
   methods: {
@@ -195,11 +199,16 @@ export default {
         for (const el of res.issues) {
           sprintFullTime += el.fields.timeestimate
         }
+        // 計画線を引くための配列を作成
         sprintFullTime = sprintFullTime / 3600
         const timeAvailablePerDay = sprintFullTime / this.days.length
         let timeLeftPlanNum = sprintFullTime
         for (const day of this.days) {
           this.timeLeftPlan.push(timeLeftPlanNum)
+          // 今日時点でのスプリント残時間を保持
+          if (day === this.$moment().format("YYYY-MM-DD")) {
+            this.sprintLeft = timeLeftPlanNum.toFixed(1)
+          }
           timeLeftPlanNum -= timeAvailablePerDay
         }
       })
@@ -219,6 +228,10 @@ export default {
           }
           // 残り時間の実績に追加
           this.timeLeftLog.push(timeLeft)
+          // タスク残時間・先行遅れ・進捗率を更新
+          this.taskLeft = this.timeLeftLog.slice(-1)[0].toFixed(1)
+          this.plusMinous = (this.sprintLeft - this.taskLeft).toFixed(1)
+          this.progress = (((sprintFullTime - this.taskLeft) / sprintFullTime) * 100).toFixed(1)
         })
         if (day === this.$moment().format("YYYY-MM-DD")) {
           break
