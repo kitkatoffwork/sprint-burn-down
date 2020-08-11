@@ -54,6 +54,14 @@ export default {
     days: {
       type: Array,
       default: []
+    },
+    timeLeftPlan: {
+      type: Array,
+      default: []
+    },
+    timeLeftLog: {
+      type: Array,
+      default: []
     }
   },
   mounted () {
@@ -75,7 +83,7 @@ export default {
             hoverRadius: 10,
             radius: 5,
             pointStyle: 'circle',
-            data: [70, 60, 50, 40, 30, 20, 10, 0],
+            data: this.timeLeftPlan,
             borderDash: [5, 5]
           }, {
             label: '実績',
@@ -88,14 +96,14 @@ export default {
             hoverRadius: 10,
             radius: 5,
             pointStyle: 'rectRounded',
-            data: [100, 110, 125, 95, 64, 76, 62]
+            data: this.timeLeftLog
           }
         ]
       }
     }
   },
   watch: {
-    days: function () {
+    timeLeftLog: function () {
       this.fillData()
     }
   }

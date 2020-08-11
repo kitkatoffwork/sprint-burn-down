@@ -28,7 +28,7 @@
             <v-card-title class="headline">
               スプリントバーンダウンチャート
             </v-card-title>
-            <BurnDownChart :days="days" />
+            <BurnDownChart :days="days" :timeLeftPlan="timeLeftPlan" :timeLeftLog="timeLeftLog" />
           </v-card>
         </v-hover>
       </v-col>
@@ -140,53 +140,90 @@ export default {
   data () {
     return {
       days: [],
+      timeLeftPlan: [],
+      timeLeftLog: []
     }
   },
   methods: {
-    getSprintTask () {
+    async getSprintTask () {
       // TODO: proxy serverを自前でたてる
-      this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+      // 今回スプリントで開発に充てる日付を取得
+      await this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
           password: process.env.JIRA_PASSWD
         }
-      }).then((response) => {
+      }).then((res) => {
         this.days = []
-        const startDate = this.$moment(response.values[0].startDate)
-        const endDate = this.$moment(response.values[0].endDate)
+        const startDate = this.$moment(res.values[0].startDate)
+        const endDate = this.$moment(res.values[0].endDate)
         for (let date = startDate; date < endDate; startDate.add(1, "days")) {
           // スプリント最終日は開発を行わない（レビュー日）ため計画から除く、土日は休みのため計画から除く
-          if ((date.format('ddd') != '土' || date.format('ddd') != '日') && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
+          if (date.format('ddd') != '土' && date.format('ddd') != '日' && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
             this.days.push(date.format("YYYY-MM-DD"))
           }
         }
-        console.log(this.days)
       })
 
-      const url = 'https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'
-      this.$axios.$get(encodeURI(url), {
+      // 今回スプリントの全ての親タスク（Story）を取得
+      let parentTasksForJql = ''
+      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'), {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
           password: process.env.JIRA_PASSWD
         }
-      }).then((response) => {
-        for (const el of response.issues) {
-          console.log(el.key)
+      }).then((res) => {
+        for (const el of res.issues) {
+          parentTasksForJql += 'parent = ' + el.key
+          if (el != res.issues.slice(-1)[0]) {
+            parentTasksForJql += ' OR '
+          }
         }
       })
 
-      const url2 = 'https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + "/rest/api/3/search?jql=(parent = TES-1 OR parent = TES-2 OR parent = TES-3) AND status changed on(2020-08-11) to '完了(受け入れ条件を満たす)'"
-      this.$axios.$get(encodeURI(url2), {
+      // 全ての子タスク分の時間取得
+      let sprintFullTime = 0
+      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
           password: process.env.JIRA_PASSWD
         }
-      }).then((response) => {
-        console.log(response)
+      }).then((res) => {
+        for (const el of res.issues) {
+          sprintFullTime += el.fields.timeestimate
+        }
+        sprintFullTime = sprintFullTime / 3600
+        const timeAvailablePerDay = sprintFullTime / this.days.length
+        let timeLeftPlanNum = sprintFullTime
+        for (const day of this.days) {
+          this.timeLeftPlan.push(timeLeftPlanNum)
+          timeLeftPlanNum -= timeAvailablePerDay
+        }
       })
+
+      // スプリント開始から今日まで日ごとに消化したタスク取得
+      let timeLeft = sprintFullTime
+      for (const day of this.days) {
+        await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
+          credentials: true,
+          auth: {
+            username: process.env.JIRA_USERNAME,
+            password: process.env.JIRA_PASSWD
+          }
+        }).then((res) => {
+          for (const el of res.issues) {
+            timeLeft -= el.fields.timeestimate / 3600
+          }
+          // 残り時間の実績に追加
+          this.timeLeftLog.push(timeLeft)
+        })
+        if (day === this.$moment().format("YYYY-MM-DD")) {
+          break
+        }
+      }
     }
   }
 }
