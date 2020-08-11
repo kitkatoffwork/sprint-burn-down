@@ -10,7 +10,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      datacollection: null,
+      datacollection: {},
       graphOptions: {
         // responsive: true,
         legend: {
@@ -65,6 +65,54 @@ export default {
       this.taskData = response
       console.log(this.taskData)
     })
+
+    const url = 'https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'
+    this.$axios.$get(encodeURI(url), {
+      credentials: true,
+      auth: {
+        username: process.env.JIRA_USERNAME,
+        password: process.env.JIRA_PASSWD
+      }
+    }).then((response) => {
+      console.log(response)
+    })
+
+    const url2 = 'https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + "/rest/api/3/search?jql=(parent = TES-1 OR parent = TES-2 OR parent = TES-3) AND status changed on(2020-08-11) to '完了(受け入れ条件を満たす)'"
+    this.$axios.$get(encodeURI(url2), {
+      credentials: true,
+      auth: {
+        username: process.env.JIRA_USERNAME,
+        password: process.env.JIRA_PASSWD
+      }
+    }).then((response) => {
+      console.log(response)
+    })
+
+    // const token = Buffer.from(`${process.env.JIRA_USERNAME}:${process.env.JIRA_PASSWD}`, 'utf8').toString('base64')
+    // this.$axios.$post('http://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search',
+    //   {
+    //     "expand": [
+    //       "names"
+    //     ],
+    //     "jql": "project = AP AND sprint in openSprints()",
+    //     "maxResults": 50,
+    //     "fieldsByKeys": false,
+    //     "fields": [
+    //       "key"
+    //     ],
+    //     "startAt": 0
+    //   },
+    //   {
+    //     headers: {
+    //       'X-Atlassian-Token': 'no-check',
+    //       'Authorization': `Basic ${token}`,
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json'
+    //     }
+    //   }
+    // ).then((response) => {
+    //   console.log(response)
+    // })
   },
   methods: {
     fillData () {
