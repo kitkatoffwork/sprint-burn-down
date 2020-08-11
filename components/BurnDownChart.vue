@@ -54,12 +54,16 @@ export default {
   },
   mounted () {
     this.fillData()
-    axios.get(process.env.JIRA_URL + '/rest/api/3/issue/', {
+    this.$axios.$get(process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+      credentials: true,
       auth: {
         username: process.env.JIRA_USERNAME,
         password: process.env.JIRA_PASSWD
       }
-    }).then((response) => this.taskData = response)
+    }).then((response) => {
+      this.taskData = response
+      console.log(this.taskData)
+    })
   },
   methods: {
     fillData () {
