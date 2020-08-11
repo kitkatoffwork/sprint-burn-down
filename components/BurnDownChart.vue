@@ -54,7 +54,8 @@ export default {
   },
   mounted () {
     this.fillData()
-    this.$axios.$get(process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+    // TODO: proxy serverを自前でたてる
+    this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
       credentials: true,
       auth: {
         username: process.env.JIRA_USERNAME,
