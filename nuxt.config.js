@@ -49,6 +49,7 @@ export default {
   */
   buildModules: [
     '@nuxtjs/dotenv',
+    '@nuxtjs/moment',
     '@nuxtjs/vuetify',
   ],
   /*
@@ -58,6 +59,9 @@ export default {
     "@nuxtjs/axios"
   ],
   axios: {},
+  moment: {
+    locales: ['ja']
+  },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
