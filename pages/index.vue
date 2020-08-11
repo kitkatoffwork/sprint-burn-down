@@ -12,119 +12,149 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-hover>
-          <v-card
-           slot-scope="{ hover }"
-           class="mx-auto aligh-center"
-          >
-            <v-fade-transition>
-              <div
-                v-if="hover"
-                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
-                style="height: 100%;"
-              >
-              </div>
-            </v-fade-transition>
-            <v-card-title class="headline">
-              スプリントバーンダウンチャート
-            </v-card-title>
-            <BurnDownChart :days="days" :timeLeftPlan="timeLeftPlan" :timeLeftLog="timeLeftLog" />
-          </v-card>
-        </v-hover>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="card"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto aligh-center"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                スプリントバーンダウンチャート
+              </v-card-title>
+              <BurnDownChart :days="days" :timeLeftPlan="timeLeftPlan" :timeLeftLog="timeLeftLog" />
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-hover>
-          <v-card
-           slot-scope="{ hover }"
-           class="mx-auto"
-          >
-            <v-fade-transition>
-              <div
-                v-if="hover"
-                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
-                style="height: 100%;"
-              >
-              </div>
-            </v-fade-transition>
-            <v-card-title class="headline">
-              スプリント残時間
-            </v-card-title>
-            <v-card-text>
-              <p class="display-3">{{ sprintLeft }}h</p>
-            </v-card-text>
-          </v-card>
-        </v-hover>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                スプリント残時間
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ sprintLeft }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
       </v-col>
       <v-col>
-        <v-hover>
-          <v-card
-           slot-scope="{ hover }"
-           class="mx-auto"
-          >
-            <v-fade-transition>
-              <div
-                v-if="hover"
-                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
-                style="height: 100%;"
-              >
-              </div>
-            </v-fade-transition>
-            <v-card-title class="headline">
-              タスク残時間
-            </v-card-title>
-            <v-card-text>
-              <p class="display-3">{{ taskLeft }}h</p>
-            </v-card-text>
-          </v-card>
-        </v-hover>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                タスク残時間
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ taskLeft }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
       </v-col>
       <v-col>
-        <v-hover>
-          <v-card
-           slot-scope="{ hover }"
-           class="mx-auto"
-          >
-            <v-fade-transition>
-              <div
-                v-if="hover"
-                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
-                style="height: 100%;"
-              >
-              </div>
-            </v-fade-transition>
-            <v-card-title class="headline">
-              先行/遅れ
-            </v-card-title>
-            <v-card-text>
-              <p class="display-3">{{ plusMinous }}h</p>
-            </v-card-text>
-          </v-card>
-        </v-hover>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                先行/遅れ
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ plusMinous }}h</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
       </v-col>
       <v-col>
-        <v-hover>
-          <v-card
-           slot-scope="{ hover }"
-           class="mx-auto"
-          >
-            <v-fade-transition>
-              <div
-                v-if="hover"
-                class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
-                style="height: 100%;"
-              >
-              </div>
-            </v-fade-transition>
-            <v-card-title class="headline">
-              進捗率
-            </v-card-title>
-            <v-card-text>
-              <p class="display-3">{{ progress }}%</p>
-            </v-card-text>
-          </v-card>
-        </v-hover>
+        <v-skeleton-loader
+          :loading="loading"
+          transition="scale-transition"
+          type="list-item-three-line"
+        >
+          <v-hover>
+            <v-card
+            slot-scope="{ hover }"
+            class="mx-auto"
+            >
+              <v-fade-transition>
+                <div
+                  v-if="hover"
+                  class="d-flex transition-fast-in-fast-out darken-2 v-card--reveal"
+                  style="height: 100%;"
+                >
+                </div>
+              </v-fade-transition>
+              <v-card-title class="headline">
+                進捗率
+              </v-card-title>
+              <v-card-text>
+                <p class="display-3">{{ progress }}%</p>
+              </v-card-text>
+            </v-card>
+          </v-hover>
+        </v-skeleton-loader>
       </v-col>
     </v-row>
   </v-container>
@@ -145,13 +175,18 @@ export default {
       sprintLeft: 0,
       taskLeft: 0,
       plusMinous: 0,
-      progress: 0
+      progress: 0,
+      loading: false
     }
+  },
+  mounted () {
+    this.getSprintTask()
   },
   methods: {
     async getSprintTask () {
       // TODO: proxy serverを自前でたてる
       // 今回スプリントで開発に充てる日付を取得
+      this.loading = true
       await this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
         credentials: true,
         auth: {
@@ -189,6 +224,7 @@ export default {
 
       // 全ての子タスク分の時間取得
       let sprintFullTime = 0
+      this.timeLeftPlan = []
       await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
         credentials: true,
         auth: {
@@ -215,6 +251,7 @@ export default {
 
       // スプリント開始から今日まで日ごとに消化したタスク取得
       let timeLeft = sprintFullTime
+      this.timeLeftLog = []
       for (const day of this.days) {
         await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
           credentials: true,
@@ -237,6 +274,7 @@ export default {
           break
         }
       }
+      this.loading = false
     }
   }
 }
