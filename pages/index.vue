@@ -220,11 +220,8 @@ export default {
           password: process.env.JIRA_PASSWD
         }
       }).then((res) => {
-        for (const el of res.issues) {
-          sprintFullTime += el.fields.timeestimate
-        }
+        sprintFullTime = this.calcSprintFullTime(res.issues)
         // 計画線を引くための配列を作成
-        sprintFullTime = sprintFullTime / 3600
         const timeAvailablePerDay = sprintFullTime / this.days.length
         let timeLeftPlanNum = sprintFullTime
         for (const day of this.days) {
@@ -263,6 +260,14 @@ export default {
         }
       }
       this.loading = false
+    },
+    calcSprintFullTime (issues) {
+      let sprintFullTime = 0
+      for (const el of issues) {
+        sprintFullTime += el.fields.timeestimate
+      }
+      // 秒単位→時間単位へ変換
+      return sprintFullTime / 3600
     },
     getBusinessDays (startDate, endDate) {
       let days = []
