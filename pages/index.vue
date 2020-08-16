@@ -212,7 +212,6 @@ export default {
 
       // 全ての子タスク分の時間取得
       let sprintFullTime = 0
-      this.timeLeftPlan = []
       await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
         credentials: true,
         auth: {
@@ -221,17 +220,8 @@ export default {
         }
       }).then((res) => {
         sprintFullTime = this.calcSprintFullTime(res.issues)
-        // 計画線を引くための配列を作成
-        const timeAvailablePerDay = sprintFullTime / this.days.length
-        let timeLeftPlanNum = sprintFullTime
-        for (const day of this.days) {
-          this.timeLeftPlan.push(timeLeftPlanNum)
-          // 今日時点でのスプリント残時間を保持
-          if (day === this.$moment().format("YYYY-MM-DD")) {
-            this.sprintLeft = timeLeftPlanNum.toFixed(1)
-          }
-          timeLeftPlanNum -= timeAvailablePerDay
-        }
+        this.timeLeftPlan = this.makeTimeLeftPlan(sprintFullTime, this.days)
+        this.sprintLeft = this.makeSprintLeft(sprintFullTime, this.days)
       })
 
       // スプリント開始から今日まで日ごとに消化したタスク取得
@@ -288,6 +278,29 @@ export default {
         }
       }
       return parentTasksForJql
+    },
+    makeSprintLeft (sprintFullTime, sprintDays) {
+      const timeAvailablePerDay = sprintFullTime / sprintDays.length
+      let timeLeftPlanNum = sprintFullTime
+      let sprintLeft = 0
+      for (const day of sprintDays) {
+        // 今日時点でのスプリント残時間を保持
+        if (day === this.$moment().format("YYYY-MM-DD")) {
+          sprintLeft = timeLeftPlanNum.toFixed(1)
+        }
+        timeLeftPlanNum -= timeAvailablePerDay
+      }
+      return sprintLeft
+    },
+    makeTimeLeftPlan (sprintFullTime, sprintDays) {
+      const timeAvailablePerDay = sprintFullTime / sprintDays.length
+      let timeLeftPlanNum = sprintFullTime
+      let timeLeftPlan = []
+      for (const day of sprintDays) {
+        timeLeftPlan.push(timeLeftPlanNum)
+        timeLeftPlanNum -= timeAvailablePerDay
+      }
+      return timeLeftPlan
     }
   }
 }
