@@ -296,13 +296,16 @@ export default {
       return sprintLeft
     },
     makeTimeLeftPlan (sprintFullTime, sprintDays) {
-      const timeAvailablePerDay = sprintFullTime / sprintDays.length
+      const timeAvailablePerDay = sprintFullTime / (sprintDays.length - 1)
       let timeLeftPlanNum = sprintFullTime
       let timeLeftPlan = []
       for (const day of sprintDays) {
         timeLeftPlan.push(timeLeftPlanNum)
         timeLeftPlanNum -= timeAvailablePerDay
       }
+      // 最終日は0に固定（浮動小数点演算のため計算結果が0にならないケースがあるため）
+      timeLeftPlan.pop()
+      timeLeftPlan.push(0)
       return timeLeftPlan
     }
   }
