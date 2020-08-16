@@ -207,12 +207,7 @@ export default {
           password: process.env.JIRA_PASSWD
         }
       }).then((res) => {
-        for (const el of res.issues) {
-          parentTasksForJql += 'parent = ' + el.key
-          if (el != res.issues.slice(-1)[0]) {
-            parentTasksForJql += ' OR '
-          }
-        }
+        parentTasksForJql = this.makeParentTasksForJql(res.issues)
       })
 
       // 全ての子タスク分の時間取得
@@ -278,6 +273,16 @@ export default {
         }
       }
       return days
+    },
+    makeParentTasksForJql (issues) {
+      let parentTasksForJql = ''
+      for (const el of issues) {
+        parentTasksForJql += 'parent = ' + el.key
+        if (el != issues.slice(-1)[0]) {
+          parentTasksForJql += ' OR '
+        }
+      }
+      return parentTasksForJql
     }
   }
 }
