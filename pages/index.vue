@@ -184,15 +184,17 @@ export default {
   },
   methods: {
     async getSprintTask () {
-      // 今回スプリントで開発に充てる日付を取得
-      this.loading = true
-      await this.$axios.$get(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+      const axios = this.$axios.create({
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
           password: process.env.JIRA_PASSWD
         }
-      }).then((res) => {
+      })
+      // 今回スプリントで開発に充てる日付を取得
+      this.loading = true
+      await axios.$get(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active'
+      ).then((res) => {
         const startDate = this.$moment(res.values[0].startDate)
         const endDate = this.$moment(res.values[0].endDate)
         this.days = this.getBusinessDays (startDate, endDate)
@@ -200,25 +202,15 @@ export default {
 
       // 今回スプリントの全ての親タスク（Story）を取得
       let parentTasksForJql = ''
-      await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'), {
-        credentials: true,
-        auth: {
-          username: process.env.JIRA_USERNAME,
-          password: process.env.JIRA_PASSWD
-        }
-      }).then((res) => {
+      await axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()')
+      ).then((res) => {
         parentTasksForJql = this.makeParentTasksForJql(res.issues)
       })
 
       // 全ての子タスク分の時間取得
       let sprintFullTime = 0
-      await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
-        credentials: true,
-        auth: {
-          username: process.env.JIRA_USERNAME,
-          password: process.env.JIRA_PASSWD
-        }
-      }).then((res) => {
+      await axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql)
+      ).then((res) => {
         sprintFullTime = this.calcSprintFullTime(res.issues)
         this.timeLeftPlan = this.makeTimeLeftPlan(sprintFullTime, this.days)
         this.sprintLeft = this.makeSprintLeft(sprintFullTime, this.days)
@@ -231,13 +223,8 @@ export default {
         if (this.$moment(day).isAfter(this.$moment())) {
           break
         }
-        await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
-          credentials: true,
-          auth: {
-            username: process.env.JIRA_USERNAME,
-            password: process.env.JIRA_PASSWD
-          }
-        }).then((res) => {
+        await axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'")
+        ).then((res) => {
           for (const el of res.issues) {
             timeLeft -= this.convertSecond2Hour(el.fields.timeestimate)
           }
