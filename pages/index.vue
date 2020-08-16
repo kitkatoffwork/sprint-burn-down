@@ -236,7 +236,7 @@ export default {
           }
         }).then((res) => {
           for (const el of res.issues) {
-            timeLeft -= el.fields.timeestimate / 3600
+            timeLeft -= this.convertSecond2Hour(el.fields.timeestimate)
           }
           // 残り時間の実績に追加
           this.timeLeftLog.push(timeLeft)
@@ -257,7 +257,10 @@ export default {
         sprintFullTime += el.fields.timeestimate
       }
       // 秒単位→時間単位へ変換
-      return sprintFullTime / 3600
+      return this.convertSecond2Hour(sprintFullTime)
+    },
+    convertSecond2Hour (sec) {
+      return sec / 3600
     },
     getBusinessDays (startDate, endDate) {
       let days = []
