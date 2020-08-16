@@ -2,6 +2,8 @@
 
 Retrieve sprint issues from the Jira API and display their progress in a burndown chart
 
+![image](https://user-images.githubusercontent.com/19267892/89915143-f7134e80-dc30-11ea-8116-9f5c685d0cfa.png)
+
 ## Getting Started
 
 ### docker-compose

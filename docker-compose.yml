@@ -9,3 +9,7 @@ services:
       - .:/app
     ports:
       - "8080:3000"
+  proxy:
+    image: psimonov/cors-anywhere
+    ports:
+      - "8081:3000"
