@@ -187,7 +187,7 @@ export default {
       // TODO: proxy serverを自前でたてる
       // 今回スプリントで開発に充てる日付を取得
       this.loading = true
-      await this.$axios.$get('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
+      await this.$axios.$get(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
@@ -207,7 +207,7 @@ export default {
 
       // 今回スプリントの全ての親タスク（Story）を取得
       let parentTasksForJql = ''
-      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'), {
+      await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=project = ' + process.env.JIRA_PROJECT_NAME + ' AND sprint in openSprints()'), {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
@@ -225,7 +225,7 @@ export default {
       // 全ての子タスク分の時間取得
       let sprintFullTime = 0
       this.timeLeftPlan = []
-      await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
+      await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql), {
         credentials: true,
         auth: {
           username: process.env.JIRA_USERNAME,
@@ -253,7 +253,7 @@ export default {
       let timeLeft = sprintFullTime
       this.timeLeftLog = []
       for (const day of this.days) {
-        await this.$axios.$get(encodeURI('https://cors-anywhere.herokuapp.com/' + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
+        await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
           credentials: true,
           auth: {
             username: process.env.JIRA_USERNAME,
