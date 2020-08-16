@@ -184,7 +184,6 @@ export default {
   },
   methods: {
     async getSprintTask () {
-      // TODO: proxy serverを自前でたてる
       // 今回スプリントで開発に充てる日付を取得
       this.loading = true
       await this.$axios.$get(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active', {
@@ -194,15 +193,9 @@ export default {
           password: process.env.JIRA_PASSWD
         }
       }).then((res) => {
-        this.days = []
         const startDate = this.$moment(res.values[0].startDate)
         const endDate = this.$moment(res.values[0].endDate)
-        for (let date = startDate; date < endDate; startDate.add(1, "days")) {
-          // スプリント最終日は開発を行わない（レビュー日）ため計画から除く、土日は休みのため計画から除く
-          if (date.format('ddd') != '土' && date.format('ddd') != '日' && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
-            this.days.push(date.format("YYYY-MM-DD"))
-          }
-        }
+        this.days = this.getBusinessDays (startDate, endDate)
       })
 
       // 今回スプリントの全ての親タスク（Story）を取得
@@ -275,6 +268,16 @@ export default {
         }
       }
       this.loading = false
+    },
+    getBusinessDays (startDate, endDate) {
+      let days = []
+      for (let date = startDate; date < endDate; startDate.add(1, "days")) {
+        // スプリント最終日は開発を行わない（レビュー日）ため計画から除く、土日は休みのため計画から除く
+        if (date.format('ddd') != '土' && date.format('ddd') != '日' && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
+          days.push(date.format("YYYY-MM-DD"))
+        }
+      }
+      return days
     }
   }
 }
