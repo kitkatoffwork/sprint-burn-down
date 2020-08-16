@@ -228,6 +228,9 @@ export default {
       let timeLeft = sprintFullTime
       this.timeLeftLog = []
       for (const day of this.days) {
+        if (this.$moment(day).isAfter(this.$moment())) {
+          break
+        }
         await this.$axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'"), {
           credentials: true,
           auth: {
@@ -245,9 +248,6 @@ export default {
           this.plusMinous = (this.sprintLeft - this.taskLeft).toFixed(1)
           this.progress = (((sprintFullTime - this.taskLeft) / sprintFullTime) * 100).toFixed(1)
         })
-        if (day === this.$moment().format("YYYY-MM-DD")) {
-          break
-        }
       }
       this.loading = false
     },
