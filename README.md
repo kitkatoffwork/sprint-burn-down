@@ -6,15 +6,28 @@ Retrieve sprint issues from the Jira API and display their progress in a burndow
 
 ## Getting Started
 
-### docker-compose
+### with docker and docker-compose
+
+1. make .env file (reference .env.sample)
+1. build
+
+    ```
+    $ docker-compose build
+    ```
+
+1. npm install
+
+    ```
+    $ docker-compose run nuxt npm install
+    ```
 
 1. start server
 
-```
-$ docker-compose up -d
-```
+    ```
+    $ docker-compose up -d
+    ```
 
-2. access localhost:8080
+1. access localhost:8080
 
 ## Build Setup
 
