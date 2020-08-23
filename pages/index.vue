@@ -209,8 +209,10 @@ export default {
 
       // 全ての子タスク分の時間取得
       let sprintFullTime = 0
+      let issues = {}
       await axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=' + parentTasksForJql)
       ).then((res) => {
+        issues = res.issues
         sprintFullTime = this.calcSprintFullTime(res.issues)
         this.timeLeftPlan = this.makeTimeLeftPlan(sprintFullTime, this.days)
         this.sprintLeft = this.makeSprintLeft(sprintFullTime, this.days)
@@ -219,22 +221,23 @@ export default {
       // スプリント開始から今日まで日ごとに消化したタスク取得
       let timeLeft = sprintFullTime
       this.timeLeftLog = []
+
+      // issues.fields.resolutiondateの日付でタスク完了日を取得、issues.fields.timeestimateでタスクの所要時間を取得しグラフ描画情報を設定
       for (const day of this.days) {
         if (this.$moment(day).isAfter(this.$moment())) {
           break
         }
-        await axios.$get(encodeURI(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/api/3/search?jql=(' + parentTasksForJql + ') AND status changed on(' + day + ") to '完了(受け入れ条件を満たす)'")
-        ).then((res) => {
-          for (const el of res.issues) {
-            timeLeft -= this.convertSecond2Hour(el.fields.timeestimate)
+        for (const issue of issues) {
+          if (this.$moment(day).format("YYYY-MM-DD") == this.$moment(issue.fields.resolutiondate).format("YYYY-MM-DD")) {
+            timeLeft -= this.convertSecond2Hour(issue.fields.timeestimate)
           }
-          // 残り時間の実績に追加
-          this.timeLeftLog.push(timeLeft)
-          // タスク残時間・先行遅れ・進捗率を更新
-          this.taskLeft = this.timeLeftLog.slice(-1)[0].toFixed(1)
-          this.plusMinous = (this.sprintLeft - this.taskLeft).toFixed(1)
-          this.progress = (((sprintFullTime - this.taskLeft) / sprintFullTime) * 100).toFixed(1)
-        })
+        }
+        // 残り時間の実績に追加
+        this.timeLeftLog.push(timeLeft)
+        // タスク残時間・先行遅れ・進捗率を更新
+        this.taskLeft = this.timeLeftLog.slice(-1)[0].toFixed(1)
+        this.plusMinous = (this.sprintLeft - this.taskLeft).toFixed(1)
+        this.progress = (((sprintFullTime - this.taskLeft) / sprintFullTime) * 100).toFixed(1)
       }
       this.loading = false
     },
