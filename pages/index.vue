@@ -193,12 +193,14 @@ export default {
       })
       // 今回スプリントで開発に充てる日付を取得
       this.loading = true
+      let startDate = ''
+      let endDate = ''
       await axios.$get(process.env.PROXY_URL + process.env.JIRA_URL + '/rest/agile/1.0/board/' + process.env.JIRA_ACTIVE_BOARD_NO + '/sprint?state=active'
       ).then((res) => {
-        const startDate = this.$moment(res.values[0].startDate)
-        const endDate = this.$moment(res.values[0].endDate)
-        this.days = this.getBusinessDays (startDate, endDate)
+        startDate = this.$moment(res.values[0].startDate)
+        endDate = this.$moment(res.values[0].endDate)
       })
+      this.days = await this.getBusinessDays(startDate, endDate)
 
       // 今回スプリントの全ての親タスク（Story）を取得
       let parentTasksForJql = ''
@@ -252,15 +254,25 @@ export default {
     convertSecond2Hour (sec) {
       return sec / 3600
     },
-    getBusinessDays (startDate, endDate) {
-      let days = []
-      for (let date = startDate; date < endDate; startDate.add(1, "days")) {
-        // スプリント最終日は開発を行わない（レビュー日）ため計画から除く、土日は休みのため計画から除く
-        if (date.format('ddd') != '土' && date.format('ddd') != '日' && date.format("YYYY-MM-DD") != endDate.format("YYYY-MM-DD")) {
-          days.push(date.format("YYYY-MM-DD"))
+    async getBusinessDays (sDate, eDate) {
+      // http://s-proj.com/utils/holiday.html
+      // 土日祝であればholiday、それ以外であればelseを返す
+      let responseList = [] // 曜日判定APIの戻り値リスト
+      let dateList = [] // start-end範囲内に存在する日付リスト
+      let resultDays = [] // 日付リストから土日祝を除いたリスト
+
+      // スプリント最終日は開発を行わない（レビュー日）ため計画から除く
+      for (let d = sDate; d < eDate; d.add(1, "days")) {
+        dateList.push(d.format("YYYYMMDD"))
+        responseList.push(this.$axios.$get(encodeURI(process.env.PROXY_URL + 'http://s-proj.com/utils/checkHoliday.php?date=' + d.format("YYYYMMDD"))))
+      }
+      const holidayResultList = await Promise.all(responseList)
+      for (let i = 0; i < holidayResultList.length; i++) {
+        if (holidayResultList[i] != 'holiday') {
+          resultDays.push(dateList[i])
         }
       }
-      return days
+      return resultDays
     },
     makeParentTasksForJql (issues) {
       let parentTasksForJql = ''
